@@ -4,7 +4,7 @@ This guide walks presenters and attendees through the four-step tokenomics demo:
 
 All rates and volumes in this guide are **illustrative**. Replace them with measurements from a pilot before using the numbers for a real decision.
 
-Verified against Microsoft documentation on 2026-10-11. Prices, product names, and model lists change frequently, so check the live pages before the session:
+Reviewed against Microsoft documentation and the supplied calculator screenshots on 2026-10-11. The walkthrough below uses the field labels and 1,000-token units shown in those screenshots. Prices, product names, and model lists change frequently, so check the live pages before the session:
 
 - [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
 - [Azure OpenAI pricing](https://azure.microsoft.com/en-us/pricing/details/azure-openai/)
@@ -17,11 +17,11 @@ Verified against Microsoft documentation on 2026-10-11. Prices, product names, a
 
 1. Open the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) in a browser and confirm it loads without signing in.
 2. Open the [Azure OpenAI pricing page](https://azure.microsoft.com/en-us/pricing/details/azure-openai/) in a second tab. Use it to find the live rate for your chosen model and deployment type.
-3. Sign in to the calculator only if you want to see negotiated or program pricing (for example, an MCA or EA billing account). Otherwise, retail prices are shown.
+3. Use retail pricing for the baseline. To view negotiated pricing, sign in to the calculator and select the appropriate licensing program and billing account/profile or agreement. Signing in or selecting MCA alone does not confirm that negotiated prices are applied. Saving an estimate may also require signing in.
 4. Prepare a worksheet (Excel or similar) with the planning inputs in Step 1. Keep it separate from the calculator. The calculator covers Azure consumption only.
 5. Decide which model and deployment type you will use. The rehearsal reference used in this guide is the **GPT-6.1 Sol (short context) Global** row, which lists $2 per 1M input tokens and $10 per 1M output tokens. Confirm that row is still listed and still priced the same before the session. If it is not, use any model and replace the illustrative rates in the worksheet with that model's live rates.
 
-> Important: the calculator uses live retail rates and cannot accept custom rates. If your model's live rate differs from the illustrative rate, the calculator total will differ from the slide. Show the calculator result and the illustrative worksheet side by side, and say so.
+> Important: the calculator uses live prices for the selected configuration and pricing program; it cannot accept custom rates. If your model's live rate differs from the illustrative rate, the calculator total will differ from the slide. Show the calculator result and the illustrative worksheet side by side, and say so.
 
 ---
 
@@ -57,14 +57,27 @@ Message for the audience: user count alone is not enough. Agent behavior drives 
 
 ### 2a. Add the Azure OpenAI product
 
-1. On the calculator, use the search box in the product picker and type **Azure OpenAI**.
-2. If no tile appears, search for **Foundry Tools**, which is the current product family for AI services in the calculator product list. Confirm the product name in the calculator before the session.
-3. Select the tile to add it to your estimate. The calculator adds it with default settings.
+1. Select the **Products** tab and type **Azure OpenAI** in the product search box.
+2. On the **Azure OpenAI** tile, select **Add to estimate**. This is the product name confirmed in the screenshots.
+3. Scroll to **Your Estimate** and expand the **Azure OpenAI** configuration if it is collapsed. Replace its default settings in the next step.
 
-### 2b. Choose the model, deployment type, region, and currency
+### 2b. Match the configuration fields in screen order
 
-1. In the configuration module, select the **model** (for example, the GPT-6.1 Sol short-context row).
-2. Select the **deployment type**. The current deployment types are:
+Set the four dropdowns in the top row from left to right, then the deployment dropdown below **Language Models**:
+
+| Order | Calculator field | Demo selection |
+|---|---|---|
+| 1 | **Region** | **East US** |
+| 2 | **Model type** | **Language Models** |
+| 3 | **Model** | **GPT-6.1 Sol (short context)** |
+| 4 | **Pricing Strategy** | **Standard (On-Demand)** |
+| 5 | **Deployment type** | **Global** |
+
+These are the exact labels and selections shown in the screenshots. If a model or option is unavailable, use the **service availability** link and check a supported configuration before continuing.
+
+The calculator's **Standard (On-Demand)** pricing strategy plus **Global** deployment type corresponds to **Global Standard** in the deployment documentation. Do not look for a single dropdown value named Global Standard. **Region** is still a required calculator selection for this walkthrough; selecting East US does not restrict Global inference processing to East US.
+
+For reference, the documented deployment types are:
 
 | Deployment type | Data processing | Billing | Best for |
 |---|---|---|---|
@@ -74,19 +87,27 @@ Message for the audience: user count alone is not enough. Agent behavior drives 
 | Global Provisioned | Any Azure region | Hourly PTU or reservation | Predictable high throughput |
 | Data Zone Provisioned | Within data zone | Hourly PTU or reservation | Data zone plus predictable throughput |
 | Regional Provisioned | Within Azure geography | Hourly PTU or reservation | Geography residency plus throughput |
-| Global / Data Zone Batch | Global or data zone | Discounted, 24-hour turnaround | Large asynchronous jobs |
+| Global / Data Zone Batch | Global or data zone | Discounted asynchronous processing | Large asynchronous jobs |
 
-For the demo, use **Global Standard** (pay-per-token). Provisioned types are covered in Step 5.
-
-3. Select the **region** if the filter is shown. Global deployments are not region-specific.
-4. Select the **currency** using the currency control in the estimate. Note that the estimate converts from USD using the published exchange rate.
+For the demo, keep the selections in the first table. Provisioned types are covered in Step 5; the reference table is not a list of values in a single calculator dropdown.
 
 ### 2c. Enter the monthly volumes and check the units
 
-1. Enter input tokens as **330** units of **1 million tokens**. Check that the unit label reads per 1M tokens. If it shows per 1K tokens, enter **330,000**.
-2. Enter output tokens as **82.5** units of **1 million tokens** (or **82,500** per 1K).
-3. If the model has a cached-input meter, leave it at zero for this demo unless you have measured cache hit rates. Cached input is billed separately from input tokens and must not be blended into the input rate.
-4. If the model shows cache-write charges, leave them at zero for the baseline and mention them as a separate category.
+The screenshots show **x1,000 tokens** below each quantity box and **Per 1,000 tokens** below each rate. Divide monthly tokens by 1,000 to get the number to enter. Enter the numbers without commas:
+
+| Calculator field | Monthly tokens | Enter in quantity box | Displayed rate per 1,000 tokens | Expected monthly cost |
+|---|---|---|---|---|
+| **Input** | 330,000,000 | `330000` | $0.00200 | $660 |
+| **Cached Input** | 0 | `0` | $0.00010 | $0 |
+| **Output** | 82,500,000 | `82500` | $0.01000 | $825 |
+
+1. Replace **Input** with `330000`.
+2. Leave **Cached Input** at `0` because this baseline assumes no cached tokens. If you later model caching, split input tokens between Input and Cached Input instead of counting the same tokens twice.
+3. Replace **Output** with `82500`.
+
+> Screenshot correction: **Input = 330** represents only 330,000 tokens and costs **$0.66** at $0.002 per 1,000 tokens. **Output = 0** adds no output cost. That is why the screenshot total is $0.66, not the demo's $1,485. Use the quantities above.
+
+If the UI later changes to 1-million-token units, enter `330` for Input and `82.5` for Output instead. Always follow the visible unit label. The selected model in the screenshots has no cache-write field; account for one separately only if a different model exposes it.
 
 ### 2d. Read the result and compare it to the worksheet
 
@@ -98,13 +119,19 @@ With the GPT-6.1 Sol (short context) Global rates ($2 input, $10 output), the ca
 | Output tokens | 82.5 million | $10 | $825 |
 | **Model total** | | | **$1,485** |
 
-If the calculator total differs, confirm the live rate on the pricing page. Report the difference rather than adjusting the worksheet.
+The displayed rates of $0.002 and $0.010 per 1,000 tokens equal $2 and $10 per 1 million tokens. The Azure OpenAI module should show **Monthly cost = $1,485**, **Annual cost = $17,820**, and **Upfront cost = $0** for this configuration. The annual figure is 12 times the monthly estimate, not an annual commitment.
 
-### 2e. Name and save the configuration
+If the module total differs, check the quantities, units, model configuration, currency, and licensing program, then confirm the live rate on the pricing page. Report any remaining price difference rather than forcing the calculator to match the slide.
 
-1. Give the configuration a unique name, for example **Demo - Agent model consumption**.
-2. Select **Save** or **Save as** and name the estimate.
-3. Use **Export** if you want an Excel copy for the demo. Use **Share** only for a read-only link to show the estimate (the link lets others view the estimate, but only you can change it).
+### 2e. Check the estimate footer, name, and save
+
+1. Rename the text box currently labeled **Azure OpenAI** to **Demo - Agent model consumption**.
+2. Scroll below the product configurations. Under **Support**, keep **Basic (Included)** for this demo ($0). A paid support plan would add to the overall estimate.
+3. Under **Select your program/offer**, check **LICENSING PROGRAM**. The screenshot shows **Microsoft Customer Agreement (MCA)** with **Selected billing profile: None selected (change)**; do not treat that as confirmation of negotiated prices. For an eligible MCA account, select **None selected (change)** and choose the applicable billing account/profile. Other programs have their own agreement-selection controls. Keep **Show Dev/Test Pricing** off for this baseline.
+4. At the bottom right, set **CURRENCY** to **United States - Dollar ($) USD**. Other currencies are converted from USD using the published exchange rate.
+5. Check **Estimated monthly cost**. With only the Azure OpenAI product and Basic support, it should match the $1,485 model total. Additional products or paid support increase this overall total.
+6. Select **Save** and name the baseline estimate; sign in if prompted. Use **Save as** to create a separate named scenario.
+7. Use **Export** for an Excel copy or **Share** for an estimate link. Review the contents before sharing; the documentation states that only the estimate owner can edit it.
 
 Message for the audience: there is no single universal token price. The model and deployment configuration determine the rate.
 
@@ -153,9 +180,10 @@ Keep users constant and change average model calls per request from 3 to 6. Keep
 
 ### 4a. Update the calculator
 
-1. Keep the same estimate and model configuration.
-2. Update the input token volume to **660** million (1M-token units) and the output token volume to **165** million.
-3. Confirm that the calculator total is about **$2,970**.
+1. Use **Save as** to create a second estimate before changing the saved baseline. Keep the same model configuration.
+2. In the **x1,000 tokens** quantity boxes, set **Input** to `660000`, **Cached Input** to `0`, and **Output** to `165000`. These represent 660 million input and 165 million output tokens.
+3. Confirm the Azure OpenAI module shows **Input = $1,320**, **Output = $1,650**, and **Monthly cost = $2,970** at the reference rates. Check the model module, not the overall estimate total if supporting services are already included.
+4. Select **Save** to preserve the second scenario.
 
 ### 4b. Confirm the worksheet values
 
@@ -170,7 +198,7 @@ Message for the audience: we added no users, but model cost doubled. The extra c
 
 Recommend a range of scenarios: expected adoption, higher adoption, and more demanding agent behavior. Reassess supporting infrastructure and human review separately for each scenario.
 
-Tip: save this as a second estimate using **Save as** so both scenarios are visible during the demo.
+If the quantity fields instead show 1-million-token units, enter `660` for Input and `165` for Output. Switch between the saved estimates to compare scenarios without adding both model configurations to the same estimate and summing them.
 
 ---
 
@@ -203,21 +231,25 @@ Do not put reservations into the calculator estimate as if they were pay-as-you-
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| Model total is 1,000 times too small or too large | Units entered per 1K instead of per 1M, or the reverse | Check the unit label on the input field before entering volumes |
+| Model monthly cost shows $0.66 | Input is 330 in x1,000-token units and Output is 0 | Set Input to `330000`, Cached Input to `0`, and Output to `82500` for the baseline |
+| Model total is 1,000 times too small or too large | Quantities use 1K-token units but the worksheet uses millions, or the reverse | Divide monthly tokens by the unit size shown below each quantity field |
 | Total differs from the slide | Live rate differs from the illustrative rate | Show the live total and the illustrative total side by side |
-| Azure OpenAI product not found | Product naming changed | Search for Foundry Tools or use the link on the Azure OpenAI pricing page |
+| Azure OpenAI product not found | Product naming changed | Check the current product picker and the Azure OpenAI pricing page; the supplied screenshots confirm the Azure OpenAI tile |
+| Global Standard is not in the dropdown | Documentation and calculator labels differ | Select Pricing Strategy = Standard (On-Demand) and Deployment type = Global |
 | Cached input is missing | Cached input is a separate meter | Enter cache hit assumptions only if measured |
 | Provisioned estimate looks low | Provisioned bills on deployed PTUs, not tokens | Use the PTU hourly rate and reservation guidance, not token units |
 | Reservation not reflected in the estimate | Reservations are purchased separately | Note the reservation as a separate commitment decision |
-| Price differs from the pricing page | Currency conversion or negotiated program pricing | Confirm the currency and whether you are signed in to a program |
+| Price differs from the pricing page | Currency conversion or negotiated program pricing | Confirm currency, licensing program, and the selected billing account/profile or agreement |
 
 ---
 
 ## Presenter checklist
 
-- [ ] Calculator loads and the Azure OpenAI or Foundry Tools tile is available
-- [ ] Chosen model row and deployment type are confirmed on the live pricing page
-- [ ] Unit labels are checked (per 1M tokens)
+- [ ] Products search shows Azure OpenAI and its Add to estimate button
+- [ ] Region, Model type, Model, Pricing Strategy, and Deployment type match the intended scenario
+- [ ] Unit labels are checked (x1,000 tokens in the supplied screenshots)
+- [ ] Baseline quantities are Input `330000`, Cached Input `0`, and Output `82500`; model monthly cost is $1,485 at the reference rates
+- [ ] Support, licensing program, billing account/profile or agreement, and USD currency are checked
 - [ ] Worksheet includes Step 1 volumes, Step 3 operating cost, and Step 4 scenario
 - [ ] Both scenarios are saved as separate estimates
 - [ ] Illustrative assumptions are labeled as such on every slide
